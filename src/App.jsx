@@ -1,29 +1,29 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import "./App.css";
+import "./css/App.css";
 import Card from "./components/Card";
 
 function App() {
+  /******************Estados****************/
   const [coords, setCoords] = useState();
   const [weather, setWeather] = useState();
+  /**********************************/
   useEffect(() => {
+    /******Funcion Succes que se usara para conseguir la posicion********/
     const success = (pos) => {
       const latlon = {
         lat: pos.coords.latitude,
         lon: pos.coords.longitude,
       };
+      /*********se asigna la latitud y longitud al estado de las coordenadas*****/
       setCoords(latlon);
     };
+    /******************Metodo para conseguir la posicion****************/
     navigator.geolocation.getCurrentPosition(success);
-    if (coords?.lat) {
-      const APIKey = `bc3e3de8ce57e86cb29342a39ead56b1`;
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${coords?.lat}&lon=${coords?.lon}&appid=${APIKey}`;
-      axios.get(url).then((res) => {
-        setWeather(res.data);
-      });
-    }
   }, [coords?.lat, coords?.lon]);
+  /************************************************/
+  /************************************************/
   let bgImg = weather?.weather[0].main;
+  bgImg = "Clear";
   let arta;
   if (bgImg == "Clouds") {
     arta = {
@@ -31,15 +31,15 @@ function App() {
     };
   } else if (bgImg == "Clear") {
     arta = {
-      backgroundImage: `url("/img/Clear.jpg")`,
+      backgroundImage: `url("/img/day.jpg")`,
     };
   } else if (bgImg == "Snow") {
     arta = {
-      backgroundImage: `url("/img/Snow.jpg")`,
+      backgroundImage: `url("/img/nieve.jpg")`,
     };
   } else if (bgImg == "Rain" || bgImg == "Drizzle") {
     arta = {
-      backgroundImage: `url("/img/Rain.jpg")`,
+      backgroundImage: `url("/img/llu.jpg")`,
     };
   } else if (bgImg == "Thunderstorm") {
     arta = {
@@ -51,10 +51,14 @@ function App() {
     };
   }
 
-  console.log(bgImg);
   return (
     <div className="App" style={arta}>
-      <Card lon={coords?.lon} lat={coords?.lat} />
+      <Card
+        weather={weather}
+        setWeather={setWeather}
+        lon={coords?.lon}
+        lat={coords?.lat}
+      />
     </div>
   );
 }
